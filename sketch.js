@@ -60,7 +60,7 @@ function setup() {
   speechRec.continuous = false;
   speechRec.interimResults = false;
 
-  recordButton = createButton("Maintenir pour parler");
+  recordButton = createButton("Hold to Speak");
   styleButton(recordButton);
   recordButton.mousePressed(startListening);
   recordButton.mouseReleased(stopListening);
@@ -95,7 +95,7 @@ function draw() {
     drawLetter(emotionsData[currentEmotion]);
   } else {
     fill(150); noStroke(); textSize(18);
-    text("Dites : Happiness, Anger, Envy...", 0, 0);
+    text("Say: Happiness, Anger, Envy...", 0, 0);
   }
   pop();
 
@@ -108,11 +108,11 @@ function draw() {
   // D. Feedback Bouton
   if (recordButton) {
     if(isListening) {
-      recordButton.html("Écoute en cours...");
+      recordButton.html("Listening...");
       recordButton.style('background', '#333');
       recordButton.style('border-color', '#ff0000');
     } else {
-      recordButton.html("Maintenir pour parler");
+      recordButton.html("Hold to Speak");
       recordButton.style('background', 'transparent');
       recordButton.style('border-color', 'white');
     }

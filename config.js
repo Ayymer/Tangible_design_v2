@@ -73,7 +73,7 @@ const CONFIG = {
   
   // ===== SPEECH RECOGNITION =====
   speech: {
-    language: 'en-US',      // Speech recognition language
+    language: "en-US",      // Speech recognition language
     continuous: false,      // Single utterance mode
     interimResults: false   // No interim results
   },
@@ -94,8 +94,8 @@ const CONFIG = {
     fontSize: '16px',
     
     // Text labels
-    labelNormal: "Maintenir pour parler",
-    labelListening: "Écoute en cours..."
+    labelNormal: "Hold to Speak",
+    labelListening: "Listening..."
   },
   
   // ===== TEXTURE PARAMETER PRESETS =====

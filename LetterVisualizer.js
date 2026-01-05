@@ -141,7 +141,7 @@ class LetterVisualizer {
     textSize(this.config.letter.promptSize);
     textAlign(CENTER, CENTER);
     
-    text("Dites : Happiness, Anger, Envy...", 0, 0);
+    text("Say: Happiness, Anger, Envy...", 0, 0);
   }
   
   // Check if an emotion is currently selected
