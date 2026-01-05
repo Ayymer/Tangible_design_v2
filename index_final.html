@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tangible Design v2 - Emotion Visualization</title>
+  
+  <!-- p5.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+  
+  <!-- p5.sound (microphone) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.min.js"></script>
+  
+  <!-- p5.speech (reconnaissance vocale) -->
+  <script src="https://cdn.jsdelivr.net/gh/IDMNYU/p5.js-speech@0.0.3/lib/p5.speech.js"></script>
+  
+  <!-- IMPORTANT: Load in correct order -->
+  <!-- 1. Configuration -->
+  <script src="config.js"></script>
+  
+  <!-- 2. Classes -->
+  <script src="Emotion.js"></script>
+  <script src="LetterVisualizer.js"></script>
+  <script src="BodyVisualizer.js"></script>
+  <script src="InputManager.js"></script>
+  
+  <!-- 3. Main application -->
+  <script src="sketch_final.js"></script>
+  
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <!-- Canvas will be created by p5.js -->
+</body>
+</html>
