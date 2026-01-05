@@ -98,6 +98,49 @@ const CONFIG = {
     labelListening: "Écoute en cours..."
   },
   
+  // ===== TEXTURE PARAMETER PRESETS =====
+  texturePresets: {
+    happiness: {
+      density: 60,      // Moderate abundance of rays/sparkles
+      energy: 75,       // High movement, joyful
+      amplitude: 50,    // Medium size elements
+      roughness: 20,    // Smooth, flowing
+      turbulence: 30    // Some variation but mostly ordered
+    },
+    
+    envy: {
+      density: 80,      // Dense, crowded, tangled
+      energy: 40,       // Moderate, simmering
+      amplitude: 35,    // Smaller, constrained
+      roughness: 60,    // Mix of smooth and sharp
+      turbulence: 70    // High chaos, unpredictable
+    },
+    
+    anger: {
+      density: 70,      // Dense strokes
+      energy: 85,       // High intensity
+      amplitude: 65,    // Bold, strong
+      roughness: 75,    // Aggressive, sharp
+      turbulence: 50    // Controlled chaos
+    },
+    
+    rage: {
+      density: 90,      // Maximum density
+      energy: 95,       // Explosive movement
+      amplitude: 80,    // Large, dramatic
+      roughness: 85,    // Very jagged
+      turbulence: 90    // Maximum chaos
+    },
+    
+    trust: {
+      density: 40,      // Sparse, spacious
+      energy: 25,       // Calm, slow
+      amplitude: 45,    // Gentle size
+      roughness: 15,    // Very smooth, organic
+      turbulence: 20    // Ordered, predictable
+    }
+  },
+  
   // ===== EMOTIONS DATA =====
   emotions: {
     happiness: {

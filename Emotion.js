@@ -4,12 +4,13 @@
    ============================================ */
 
 class Emotion {
-  constructor(key, data) {
+  constructor(key, data, texturePreset = null) {
     this.key = key;                    // e.g., "happiness"
     this.color = data.color;           // Hex color string
     this.letter = data.letter;         // Single letter (H, E, A, R, T)
     this.bodyPos = data.bodyPos;       // {x, y} position on body
     this.description = data.desc;      // Full description text
+    this.texturePreset = texturePreset; // Texture parameter preset
   }
   
   // Getters for clean access
@@ -47,6 +48,16 @@ class Emotion {
   getP5Color() {
     return color(this.color);
   }
+  
+  // Get texture parameter preset
+  getTexturePreset() {
+    return this.texturePreset;
+  }
+  
+  // Check if texture preset exists
+  hasTexturePreset() {
+    return this.texturePreset !== null;
+  }
 }
 
 /* ============================================
@@ -55,10 +66,11 @@ class Emotion {
    ============================================ */
 
 class EmotionFactory {
-  static createAll(emotionsData) {
+  static createAll(emotionsData, texturePresets = null) {
     const emotions = {};
     for (let key in emotionsData) {
-      emotions[key] = new Emotion(key, emotionsData[key]);
+      let preset = texturePresets ? texturePresets[key] : null;
+      emotions[key] = new Emotion(key, emotionsData[key], preset);
     }
     return emotions;
   }
