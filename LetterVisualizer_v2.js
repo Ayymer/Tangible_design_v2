@@ -136,40 +136,46 @@ class LetterVisualizer {
     let s = this.config.letter.size;
     
     push();
-      // Save canvas context
-      drawingContext.save();
-      
-      // Create clipping path from letter shape
-      text(this.currentEmotion.getLetter(), 0, 0);
-      drawingContext.clip();
-      
-      // Use texture if available, otherwise solid color
-      if (this.currentTexture) {
-        // Create pattern from texture
-        let pattern = this.textureGen.createPattern(this.currentTexture);
-        drawingContext.fillStyle = pattern;
-      } else {
-        // Fallback to solid color
-        drawingContext.fillStyle = this.currentEmotion.getColor();
-      }
-      
-      // Draw fill rectangle (liquid animation)
-      rectMode(CORNER);
-      
-      // Calculate fill height based on fill level
-      let h = map(
-        this.fillLevel,
-        this.config.audio.fillLevelMin,
-        this.config.audio.fillLevelMax,
-        0,
-        s
-      );
-      
-      // Draw from bottom up
-      drawingContext.fillRect(-s/2, (s/2) - h, s, h);
-      
-      // Restore canvas context
-      drawingContext.restore();
+    
+    // Set up text rendering for clipping
+    textSize(s);
+    textStyle(BOLD);
+    textAlign(CENTER, CENTER);
+    
+    // Use texture if available, otherwise solid color
+    if (this.currentTexture) {
+      // Create pattern from texture
+      let pattern = this.textureGen.createPattern(this.currentTexture);
+      drawingContext.fillStyle = pattern;
+    } else {
+      // Fallback to solid color
+      fill(this.currentEmotion.getColor());
+    }
+    
+    // Calculate fill height based on fill level
+    let h = map(
+      this.fillLevel,
+      this.config.audio.fillLevelMin,
+      this.config.audio.fillLevelMax,
+      0,
+      s
+    );
+    
+    // Save context for clipping
+    drawingContext.save();
+    
+    // Create clipping rectangle for liquid effect (bottom to top)
+    drawingContext.beginPath();
+    drawingContext.rect(-s/2, (s/2) - h, s, h);
+    drawingContext.clip();
+    
+    // Draw filled text within clipping region
+    noStroke();
+    text(this.currentEmotion.getLetter(), 0, 0);
+    
+    // Restore context
+    drawingContext.restore();
+    
     pop();
   }
   
