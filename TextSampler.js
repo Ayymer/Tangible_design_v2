@@ -25,22 +25,22 @@ class TextSampler {
     textFont('Arial');
     textStyle(BOLD);
     
-    // Get text bounds to calculate offset for centering
-    let bounds = textFont().textBounds(text, 0, 0, fontSize);
-    let textWidth = bounds.w;
-    let textHeight = bounds.h;
+    // Measure text width using textWidth()
+    let tw = textWidth(text);
+    let th = fontSize; // Approximate height as fontSize
     
-    console.log(`📐 Text bounds: ${floor(textWidth)}x${floor(textHeight)}`);
+    console.log(`📐 Text bounds: ${floor(tw)}x${floor(th)}`);
     
     // Calculate position so text is centered
     // textToPoints uses baseline positioning, so we need to adjust
-    let textX = centerX - textWidth / 2;
-    let textY = centerY + textHeight / 4; // Adjust for baseline
+    let textX = centerX - tw / 2;
+    let textY = centerY; // Center vertically
     
-    // Use textToPoints to get outline points
+    // Use font().textToPoints() to get outline points
     // sampleFactor controls density (lower = more points)
     let sampleFactor = max(0.05, 0.5 / (numPoints / 1000)); // Adaptive sampling
-    let points = textFont().textToPoints(text, textX, textY, fontSize, {
+    let font = textFont();
+    let points = font.textToPoints(text, textX, textY, fontSize, {
       sampleFactor: sampleFactor,
       simplifyThreshold: 0
     });
@@ -52,33 +52,13 @@ class TextSampler {
       return [];
     }
     
-    // Fill in the interior of letters by sampling a grid within bounds
-    let allPoints = [...points]; // Start with outline points
-    
-    // Add interior points
-    let step = fontSize / 20; // Grid step size
-    for (let py = bounds.y; py < bounds.y + bounds.h; py += step) {
-      for (let px = bounds.x; px < bounds.x + bounds.w; px += step) {
-        // Check if this point is inside the text shape
-        // by rendering text and checking pixel
-        if (this.isPointInText(text, px, py, textX, textY, fontSize)) {
-          allPoints.push({
-            x: textX + px,
-            y: textY + py
-          });
-        }
-      }
-    }
-    
-    console.log(`✅ Total points (outline + interior): ${allPoints.length}`);
-    
-    // Randomly sample requested number of points
+    // Randomly sample requested number of points from outline
     let sampledPoints = [];
-    let actualPoints = min(numPoints, allPoints.length);
+    let actualPoints = min(numPoints, points.length);
     
     for (let i = 0; i < actualPoints; i++) {
-      let randomIndex = floor(random(allPoints.length));
-      sampledPoints.push(allPoints[randomIndex]);
+      let randomIndex = floor(random(points.length));
+      sampledPoints.push(points[randomIndex]);
     }
     
     console.log(`✨ Returning ${sampledPoints.length} sampled points`);
@@ -89,33 +69,6 @@ class TextSampler {
     }
     
     return sampledPoints;
-  }
-  
-  /**
-   * Check if a point is inside the text shape
-   * Uses a small off-screen buffer to test
-   */
-  isPointInText(text, px, py, textX, textY, fontSize) {
-    // Create tiny buffer just for this test
-    let testSize = 10;
-    let pg = createGraphics(testSize, testSize);
-    
-    pg.background(0);
-    pg.fill(255);
-    pg.textSize(fontSize);
-    pg.textFont('Arial');
-    pg.textStyle(BOLD);
-    
-    // Draw text offset so our test point is in center of buffer
-    pg.text(text, testSize/2 - px, testSize/2 - py);
-    
-    pg.loadPixels();
-    let centerIndex = (floor(testSize/2) + floor(testSize/2) * testSize) * 4;
-    let brightness = pg.pixels[centerIndex];
-    
-    pg.remove();
-    
-    return brightness > 128;
   }
   
   /**
