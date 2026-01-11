@@ -4,13 +4,13 @@
    ============================================ */
 
 class ParticleTextSystem {
-  constructor(text, particleType, params, x, y, fontSize) {
+  constructor(text, x, y, fontSize, particleType, params) {
     this.text = text;
-    this.particleType = particleType;
-    this.params = params;
     this.x = x;
     this.y = y;
     this.fontSize = fontSize;
+    this.particleType = particleType;
+    this.params = params;
     
     this.particles = [];
     this.sampler = new TextSampler();
