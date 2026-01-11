@@ -1,6 +1,6 @@
 /* ============================================
    PHASE 3: PARTICLE-BASED EMOTION VISUALIZATION
-   Full emotion words with diverse particle types
+   Modern black-themed interface
    ============================================ */
 
 // Global variables
@@ -31,16 +31,12 @@ function setup() {
   mic.start();
   
   // Initialize speech recognition
-  speechRec = new p5.SpeechRec(CONFIG_PHASE3.speech.language, gotSpeech);
-  speechRec.continuous = CONFIG_PHASE3.speech.continuous;
-  speechRec.interimResults = CONFIG_PHASE3.speech.interimResults;
+  speechRec = new p5.SpeechRec('en-US', gotSpeech);
+  speechRec.continuous = false;
+  speechRec.interimResults = false;
   
-  // Create button
-  let btnConfig = CONFIG_PHASE3.ui.button;
-  recordButton = createButton(btnConfig.labelNormal);
-  styleButton(recordButton);
-  recordButton.mousePressed(startListening);
-  recordButton.mouseReleased(stopListening);
+  // Create modern button
+  createModernButton();
   
   // Initialize parameter display
   paramDisplay = new ParameterDisplayPhase3(CONFIG_PHASE3);
@@ -48,93 +44,123 @@ function setup() {
   console.log('✅ Phase 3 initialized');
 }
 
-function draw() {
-  // Background
-  background(CONFIG_PHASE3.canvas.backgroundColor);
+function createModernButton() {
+  let btnConfig = CONFIG_PHASE3.ui.button;
   
-  // Display instructions
-  ParameterDisplayPhase3.displayInstructions(CONFIG_PHASE3);
+  recordButton = createButton(CONFIG_PHASE3.text.buttonIdle);
+  recordButton.position(
+    (windowWidth - btnConfig.width) / 2,
+    windowHeight - btnConfig.height - CONFIG_PHASE3.layout.buttonOffsetY
+  );
+  recordButton.size(btnConfig.width, btnConfig.height);
   
-  // Display parameter panel
-  if (currentEmotion) {
-    paramDisplay.display();
-  }
+  // Modern styling
+  recordButton.style('font-family', btnConfig.fontFamily);
+  recordButton.style('font-size', btnConfig.fontSize + 'px');
+  recordButton.style('color', btnConfig.color);
+  recordButton.style('background', btnConfig.backgroundColor);
+  recordButton.style('border', `${btnConfig.borderWidth}px solid ${btnConfig.borderColor}`);
+  recordButton.style('border-radius', btnConfig.borderRadius + 'px');
+  recordButton.style('cursor', 'pointer');
+  recordButton.style('transition', 'all 0.2s ease');
+  recordButton.style('backdrop-filter', 'blur(10px)');
+  recordButton.style('-webkit-backdrop-filter', 'blur(10px)');
   
-  // Update and display text particles
-  if (textSystem) {
-    textSystem.update();
-    textSystem.display();
-  } else {
-    // Show prompt
-    displayPrompt();
-  }
+  // Hover effect
+  recordButton.mouseOver(() => {
+    if (!isListening) {
+      recordButton.style('background', btnConfig.hoverColor);
+      recordButton.style('box-shadow', `0 0 ${btnConfig.glowSize}px ${btnConfig.glowColor}`);
+    }
+  });
   
-  // Update button state
-  updateButton();
+  recordButton.mouseOut(() => {
+    if (!isListening) {
+      recordButton.style('background', btnConfig.backgroundColor);
+      recordButton.style('box-shadow', 'none');
+    }
+  });
+  
+  recordButton.mousePressed(startListening);
+  recordButton.mouseReleased(stopListening);
 }
 
-function displayPrompt() {
-  push();
-  fill(255);
-  noStroke();
-  textSize(18);
-  textAlign(CENTER, CENTER);
-  text('Say: Happiness, Anger, Envy, Rage, Trust', 
-       width / 2, 
-       height / 2);
-  pop();
+function draw() {
+  // Black background
+  background(CONFIG_PHASE3.canvas.backgroundColor);
+  
+  // Draw instructions
+  ParameterDisplayPhase3.displayInstructions(CONFIG_PHASE3);
+  
+  // Draw and update particle system
+  if (textSystem) {
+    textSystem.update(currentParams);
+    textSystem.display();
+  }
+  
+  // Draw parameter display
+  if (paramDisplay && currentEmotion) {
+    paramDisplay.display(currentParams);
+  }
 }
 
 function startListening() {
-  userStartAudio();
   isListening = true;
+  recordButton.html(CONFIG_PHASE3.text.buttonListening);
+  recordButton.style('background', CONFIG_PHASE3.ui.button.activeColor);
   speechRec.start();
   console.log('🎙️ START LISTENING');
 }
 
 function stopListening() {
   isListening = false;
+  recordButton.html(CONFIG_PHASE3.text.buttonIdle);
+  recordButton.style('background', CONFIG_PHASE3.ui.button.backgroundColor);
+  speechRec.stop();
   console.log('🎙️ STOP LISTENING');
 }
 
 function gotSpeech() {
-  if (speechRec.resultValue) {
-    let word = speechRec.resultString.toLowerCase();
-    console.log('🗣️ SPEECH DETECTED:', word);
-    
-    // Check for emotion keywords
-    for (let emotionKey in CONFIG_PHASE3.emotions) {
-      if (word.includes(emotionKey)) {
-        handleEmotionDetected(emotionKey);
-        break;
-      }
+  if (!speechRec.resultValue) return;
+  
+  let speech = speechRec.resultString.toLowerCase().trim();
+  console.log('🗣️ SPEECH DETECTED:', speech);
+  
+  // Check for emotion keywords
+  const emotions = ['happiness', 'anger', 'envy', 'rage', 'trust'];
+  for (let emotion of emotions) {
+    if (speech.includes(emotion)) {
+      handleEmotionDetected(emotion);
+      return;
     }
   }
 }
 
-function handleEmotionDetected(emotionKey) {
-  console.log('🎭 EMOTION DETECTED:', emotionKey);
+function handleEmotionDetected(emotion) {
+  console.log('🎭 EMOTION DETECTED:', emotion);
   
-  currentEmotion = emotionKey;
+  currentEmotion = emotion;
   
-  // Load emotion preset
-  currentParams = Object.assign({}, CONFIG_PHASE3.emotionPresets[emotionKey]);
+  // Load preset for this emotion
+  let preset = CONFIG_PHASE3.emotionPresets[emotion];
+  if (preset) {
+    currentParams = {...preset};
+    console.log('🎨 Loaded preset for', emotion);
+  }
   
   // Get particle type for this emotion
-  let particleType = CONFIG_PHASE3.emotionParticles[emotionKey];
+  let particleType = CONFIG_PHASE3.emotionParticles[emotion];
   
-  // Create text particle system
+  // Create new particle system
+  let emotionText = emotion.toUpperCase();
   textSystem = new ParticleTextSystem(
-    emotionKey.toUpperCase(),
-    particleType,
-    currentParams,
+    emotionText,
     width / 2,
-    height / 2,  // Center vertically
-    CONFIG_PHASE3.layout.textSize
+    height / 2,
+    CONFIG_PHASE3.layout.textSize,
+    particleType,
+    currentParams
   );
-  
-  // Update parameter display
-  paramDisplay.updateParams(currentParams);
   
   console.log('✨ Particle system created');
 }
@@ -143,102 +169,60 @@ function keyPressed() {
   if (!currentEmotion) return;
   
   let k = key.toLowerCase();
-  let changed = null;
+  let changed = false;
+  let changedParam = null;
   
   switch(k) {
     case 'h':
-      currentParams.hue = (currentParams.hue + CONFIG_PHASE3.parameters.hue.step) % 360;
-      changed = 'H';
-      console.log('🎨 HUE:', currentParams.hue);
+      currentParams.hue = (currentParams.hue + CONFIG_PHASE3.parameters.hueStep) % 360;
+      changed = true;
+      changedParam = 'H';
       break;
-      
     case 'e':
-      currentParams.energy = (currentParams.energy + CONFIG_PHASE3.parameters.energy.step) % 110;
-      if (currentParams.energy > 100) currentParams.energy = 0;
-      changed = 'E';
-      console.log('⚡ ENERGY:', currentParams.energy);
+      currentParams.energy = (currentParams.energy + CONFIG_PHASE3.parameters.energyStep) % 101;
+      changed = true;
+      changedParam = 'E';
       break;
-      
     case 'a':
-      currentParams.amount = (currentParams.amount + CONFIG_PHASE3.parameters.amount.step) % 110;
-      if (currentParams.amount > 100) currentParams.amount = 10;
-      changed = 'A';
-      console.log('▪ AMOUNT:', currentParams.amount);
+      currentParams.amount = (currentParams.amount + CONFIG_PHASE3.parameters.amountStep) % 101;
+      changed = true;
+      changedParam = 'A';
       break;
-      
     case 'r':
-      currentParams.radius = (currentParams.radius + CONFIG_PHASE3.parameters.radius.step);
-      if (currentParams.radius > CONFIG_PHASE3.parameters.radius.max) {
-        currentParams.radius = CONFIG_PHASE3.parameters.radius.min;
-      }
-      changed = 'R';
+      currentParams.radius = ((currentParams.radius + CONFIG_PHASE3.parameters.radiusStep - 1) % 20) + 1;
+      changed = true;
+      changedParam = 'R';
       console.log('● RADIUS:', currentParams.radius);
       break;
-      
     case 't':
-      currentParams.turbulence = (currentParams.turbulence + CONFIG_PHASE3.parameters.turbulence.step) % 110;
-      if (currentParams.turbulence > 100) currentParams.turbulence = 0;
-      changed = 'T';
-      console.log('~ TURBULENCE:', currentParams.turbulence);
+      currentParams.turbulence = (currentParams.turbulence + CONFIG_PHASE3.parameters.turbulenceStep) % 101;
+      changed = true;
+      changedParam = 'T';
       break;
   }
   
-  if (changed) {
-    // Update particle system with new parameters
-    if (textSystem) {
-      textSystem.updateParams(currentParams);
+  if (changed && textSystem) {
+    textSystem.regenerate(currentParams);
+    if (paramDisplay) {
+      paramDisplay.highlight(changedParam);
     }
-    
-    // Update parameter display
-    paramDisplay.updateParams(currentParams, changed);
   }
-}
-
-function updateButton() {
-  if (!recordButton) return;
-  
-  let btnConfig = CONFIG_PHASE3.ui.button;
-  
-  if (isListening) {
-    recordButton.html(btnConfig.labelListening);
-    recordButton.style('background', btnConfig.backgroundListening);
-    recordButton.style('border', btnConfig.borderListening);
-  } else {
-    recordButton.html(btnConfig.labelNormal);
-    recordButton.style('background', btnConfig.backgroundNormal);
-    recordButton.style('border', btnConfig.borderNormal);
-  }
-}
-
-function styleButton(btn) {
-  let btnConfig = CONFIG_PHASE3.ui.button;
-  
-  btn.position(
-    width / 2 - btnConfig.width / 2,
-    height - btnConfig.offsetY
-  );
-  btn.size(btnConfig.width, btnConfig.height);
-  btn.style('color', btnConfig.textColor);
-  btn.style('background', btnConfig.backgroundNormal);
-  btn.style('border', btnConfig.borderNormal);
-  btn.style('border-radius', btnConfig.borderRadius);
-  btn.style('font-size', btnConfig.fontSize);
-  btn.style('cursor', 'pointer');
 }
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
   
-  if (recordButton) {
-    let btnConfig = CONFIG_PHASE3.ui.button;
-    recordButton.position(
-      width / 2 - btnConfig.width / 2,
-      height - btnConfig.offsetY
-    );
-  }
+  // Reposition button
+  let btnConfig = CONFIG_PHASE3.ui.button;
+  recordButton.position(
+    (windowWidth - btnConfig.width) / 2,
+    windowHeight - btnConfig.height - CONFIG_PHASE3.layout.buttonOffsetY
+  );
   
-  // Regenerate particle system with new dimensions
-  if (currentEmotion) {
-    handleEmotionDetected(currentEmotion);
+  // Regenerate particle system at new center
+  if (textSystem) {
+    textSystem.x = width / 2;
+    textSystem.y = height / 2;
+    textSystem.regenerate(currentParams);
   }
 }

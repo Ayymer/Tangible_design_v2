@@ -1,18 +1,18 @@
 /* ============================================
    PHASE 3 CONFIGURATION
-   Settings for particle-based emotion visualization
+   Modern black-themed interface
    ============================================ */
 
 const CONFIG_PHASE3 = {
   // ===== CANVAS =====
   canvas: {
-    backgroundColor: '#808080'  // Gray background (from mockup)
+    backgroundColor: '#0a0a0a'  // Very dark gray (almost black) for modern look
   },
   
   // ===== LAYOUT =====
   layout: {
-    textSize: 400,        // Very large text size for readability
-    buttonOffsetY: 60     // Button offset from bottom
+    textSize: 128,        // Readable size that won't overflow
+    buttonOffsetY: 80     // Button offset from bottom
   },
   
   // ===== EMOTION → PARTICLE TYPE MAPPING =====
@@ -65,122 +65,69 @@ const CONFIG_PHASE3 = {
   
   // ===== PARAMETER SETTINGS =====
   parameters: {
-    hue: {
-      min: 0,
-      max: 360,
-      step: 36,       // 10 steps around color wheel
-      wrap: true
-    },
-    energy: {
-      min: 0,
-      max: 100,
-      step: 10,
-      wrap: true
-    },
-    amount: {
-      min: 0,
-      max: 100,
-      step: 10,
-      wrap: true
-    },
-    radius: {
-      min: 1,
-      max: 20,
-      step: 2,
-      wrap: true
-    },
-    turbulence: {
-      min: 0,
-      max: 100,
-      step: 10,
-      wrap: true
-    }
+    hueStep: 10,          // Degrees to change hue per key press
+    energyStep: 10,       // Energy change per key press
+    amountStep: 10,       // Amount change per key press
+    radiusStep: 2,        // Radius change per key press
+    turbulenceStep: 10    // Turbulence change per key press
   },
   
-  // ===== UI ELEMENTS =====
+  // ===== UI STYLING =====
   ui: {
     // Instructions (top-left)
     instructions: {
       x: 30,
       y: 30,
-      color: '#FFFFFF',
-      size: 14,
-      lineHeight: 22,
-      text: [
-        'INSTRUCTIONS',
-        '1. Hold button to speak',
-        '2. Say: happiness, anger, envy, rage, trust',
-        '3. Press H/E/A/R/T keys to adjust parameters'
-      ]
+      fontSize: 16,
+      fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+      color: '#ffffff',
+      lineHeight: 28,
+      opacity: 0.8
     },
     
-    // Parameter display (top-right)
+    // Parameter display (bottom-right)
     parameterDisplay: {
-      x: -30,           // Offset from right edge
-      y: 30,
-      color: '#FFFFFF',
-      size: 12,
-      lineHeight: 20,
-      labelWidth: 15,
-      valueWidth: 30,
-      iconSize: 8
+      x: -30,  // Offset from right edge
+      y: -30,  // Offset from bottom edge
+      fontSize: 14,
+      fontFamily: 'JetBrains Mono, Consolas, monospace',
+      color: '#ffffff',
+      lineHeight: 24,
+      opacity: 0.9,
+      backgroundColor: 'rgba(255, 255, 255, 0.05)',
+      padding: 16,
+      borderRadius: 12,
+      backdropBlur: true
     },
     
-    // Button (bottom center)
+    // Button styling
     button: {
-      width: 150,
-      height: 40,
-      offsetY: 60,
-      textColor: '#FFFFFF',
-      backgroundNormal: 'transparent',
-      backgroundListening: '#333333',
-      borderNormal: '2px solid white',
-      borderListening: '2px solid #ff0000',
-      borderRadius: '20px',
-      fontSize: '16px',
-      labelNormal: 'Hold to speak',
-      labelListening: 'Listening...'
+      width: 200,
+      height: 56,
+      fontSize: 16,
+      fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+      color: '#ffffff',
+      backgroundColor: 'rgba(255, 255, 255, 0.08)',
+      hoverColor: 'rgba(255, 255, 255, 0.12)',
+      activeColor: 'rgba(255, 255, 255, 0.16)',
+      borderRadius: 28,
+      borderWidth: 1.5,
+      borderColor: 'rgba(255, 255, 255, 0.2)',
+      glowColor: 'rgba(255, 255, 255, 0.3)',
+      glowSize: 20
     }
   },
   
-  // ===== SPEECH RECOGNITION =====
-  speech: {
-    language: 'en-US',
-    continuous: false,
-    interimResults: false
-  },
-  
-  // ===== EMOTIONS DATA =====
-  emotions: {
-    happiness: {
-      key: 'happiness',
-      letter: 'H',
-      color: '#FFD700',
-      desc: 'HAPPINESS: A radiant warmth that floods the chest and extends to the face. One feels a physical lightness, an opening of the heart, and a vibrant energy that makes you want to smile.'
-    },
-    envy: {
-      key: 'envy',
-      letter: 'E',
-      color: '#FF4500',
-      desc: 'ENVY: An unpleasant sensation of constriction in the throat and a heavy warmth in the head. It is a mixture of desire and frustration that creates a physical tension focused on the upper body.'
-    },
-    anger: {
-      key: 'anger',
-      letter: 'A',
-      color: '#FF8C00',
-      desc: 'ANGER: A brutal surge of adrenaline. The heat rises to the hands (ready to strike) and the face. The upper body tenses, the heart rate accelerates to prepare for action.'
-    },
-    rage: {
-      key: 'rage',
-      letter: 'R',
-      color: '#FF0000',
-      desc: 'RAGE: The explosive form of anger. Extreme and boiling pressure in the head, like a volcano. Vision may blur, the heat is blinding, and loss of physical control is near.'
-    },
-    trust: {
-      key: 'trust',
-      letter: 'T',
-      color: '#20B2AA',
-      desc: 'TRUST: A deep sense of security and calm. The chest relaxes, breathing becomes ample and regular. It is a soft and soothing warmth located at the level of the heart.'
-    }
+  // ===== TEXT CONTENT =====
+  text: {
+    instructions: [
+      'INSTRUCTIONS',
+      '',
+      '1. Hold button to speak',
+      '2. Say: happiness, anger, envy, rage, trust',
+      '3. Press H/E/A/R/T keys to adjust parameters'
+    ],
+    buttonIdle: 'Hold to speak',
+    buttonListening: 'Listening...'
   }
 };
