@@ -11,7 +11,7 @@ const CONFIG_PHASE3 = {
   
   // ===== LAYOUT =====
   layout: {
-    textSize: 280,        // Large text size
+    textSize: 400,        // Very large text size for readability
     buttonOffsetY: 60     // Button offset from bottom
   },
   
@@ -30,35 +30,35 @@ const CONFIG_PHASE3 = {
       hue: 60,        // Yellow/Gold
       energy: 70,     // Lively
       amount: 95,     // Very dense for legibility
-      radius: 4,      // Smaller for tighter packing
+      radius: 12,     // Large for visibility
       turbulence: 40  // Moderate chaos
     },
     trust: {
       hue: 180,       // Turquoise/Cyan
       energy: 30,     // Calm
       amount: 95,     // Very dense for legibility
-      radius: 3,      // Smaller for tighter packing
+      radius: 12,     // Large for visibility
       turbulence: 20  // Low chaos
     },
     envy: {
       hue: 15,        // Red-Orange
       energy: 60,     // Medium
       amount: 95,     // Very dense for legibility
-      radius: 3,      // Smaller for tighter packing
+      radius: 12,     // Large for visibility
       turbulence: 50  // Medium chaos
     },
     rage: {
       hue: 0,         // Pure Red
       energy: 100,    // Maximum
       amount: 95,     // Very dense for legibility
-      radius: 6,      // Smaller for legibility
+      radius: 15,     // Very large for visibility
       turbulence: 90  // Extreme chaos
     },
     anger: {
       hue: 30,        // Orange
       energy: 90,     // Very fast
       amount: 95,     // Very dense for legibility
-      radius: 4,      // Smaller for tighter packing
+      radius: 12,     // Large for visibility
       turbulence: 70  // High chaos
     }
   },

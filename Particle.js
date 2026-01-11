@@ -63,7 +63,7 @@ class Particle {
     // Spring force toward target (keeps particles near text shape)
     let dx = this.targetX - this.x;
     let dy = this.targetY - this.y;
-    let springStrength = 0.05;
+    let springStrength = 0.15; // Increased from 0.05 for tighter letter shapes
     this.vx += dx * springStrength;
     this.vy += dy * springStrength;
     
