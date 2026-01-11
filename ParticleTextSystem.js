@@ -27,7 +27,8 @@ class ParticleTextSystem {
     this.particles = [];
     
     // Calculate number of particles based on amount parameter
-    let numParticles = floor(map(this.params.amount, 0, 100, 1000, 5000));
+    // INCREASED range for better text density and readability
+    let numParticles = floor(map(this.params.amount, 0, 100, 2000, 10000));
     
     // Sample points from text
     let points = this.sampler.sampleText(
@@ -43,8 +44,9 @@ class ParticleTextSystem {
       let pt = points[i];
       
       // Start particles slightly offset for entrance animation
-      let startX = pt.x + random(-20, 20);
-      let startY = pt.y + random(-20, 20);
+      // REDUCED offset for faster text formation
+      let startX = pt.x + random(-10, 10);
+      let startY = pt.y + random(-10, 10);
       
       let particle = createParticle(
         this.particleType,
@@ -64,8 +66,14 @@ class ParticleTextSystem {
   
   /**
    * Update all particles
+   * @param {Object} params - Optional new parameters
    */
-  update() {
+  update(params) {
+    // Update params if provided
+    if (params) {
+      this.params = params;
+    }
+    
     for (let particle of this.particles) {
       if (particle.isOnScreen()) {
         particle.update(this.params);
@@ -82,6 +90,17 @@ class ParticleTextSystem {
         particle.display();
       }
     }
+  }
+  
+  /**
+   * Regenerate particles with new parameters
+   * @param {Object} newParams - New parameters for particle generation
+   */
+  regenerate(newParams) {
+    if (newParams) {
+      this.params = newParams;
+    }
+    this.generateParticles();
   }
   
   /**

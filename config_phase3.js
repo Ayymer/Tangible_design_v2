@@ -1,6 +1,7 @@
 /* ============================================
    PHASE 3 CONFIGURATION
    Modern black-themed interface
+   Optimized for readable particle text
    ============================================ */
 
 const CONFIG_PHASE3 = {
@@ -11,7 +12,7 @@ const CONFIG_PHASE3 = {
   
   // ===== LAYOUT =====
   layout: {
-    textSize: 80,         // Readable size that fits on screen
+    textSize: 120,        // INCREASED for better visibility
     buttonOffsetY: 80     // Button offset from bottom
   },
   
@@ -25,41 +26,42 @@ const CONFIG_PHASE3 = {
   },
   
   // ===== EMOTION PRESETS =====
+  // Optimized for READABLE particle text
   emotionPresets: {
     happiness: {
       hue: 60,        // Yellow/Gold
-      energy: 70,     // Lively
-      amount: 95,     // Very dense for legibility
-      radius: 18,     // Extra large for visibility
-      turbulence: 15  // Low chaos for readability
+      energy: 40,     // REDUCED for calmer movement
+      amount: 100,    // MAXIMUM density for legibility
+      radius: 4,      // SMALLER particles = more detail
+      turbulence: 8   // VERY LOW chaos for readability
     },
     trust: {
       hue: 180,       // Turquoise/Cyan
-      energy: 30,     // Calm
-      amount: 95,     // Very dense for legibility
-      radius: 18,     // Extra large for visibility
-      turbulence: 10  // Very low chaos
+      energy: 20,     // Very calm
+      amount: 100,    // Maximum density
+      radius: 4,      // Small particles
+      turbulence: 5   // Minimal chaos
     },
     envy: {
       hue: 15,        // Red-Orange
-      energy: 60,     // Medium
-      amount: 95,     // Very dense for legibility
-      radius: 18,     // Extra large for visibility
-      turbulence: 20  // Low chaos for readability
+      energy: 35,     // Medium-low
+      amount: 100,    // Maximum density
+      radius: 4,      // Small particles
+      turbulence: 10  // Low chaos
     },
     rage: {
       hue: 0,         // Pure Red
-      energy: 100,    // Maximum
-      amount: 95,     // Very dense for legibility
-      radius: 20,     // Extra large for visibility
-      turbulence: 30  // Moderate chaos (reduced for readability)
+      energy: 60,     // Higher energy but still readable
+      amount: 100,    // Maximum density
+      radius: 5,      // Slightly larger
+      turbulence: 15  // Moderate chaos (still readable)
     },
     anger: {
       hue: 30,        // Orange
-      energy: 90,     // Very fast
-      amount: 95,     // Very dense for legibility
-      radius: 18,     // Extra large for visibility
-      turbulence: 25  // Moderate chaos for readability
+      energy: 50,     // Medium energy
+      amount: 100,    // Maximum density
+      radius: 4,      // Small particles
+      turbulence: 12  // Low-moderate chaos
     }
   },
   
@@ -68,8 +70,8 @@ const CONFIG_PHASE3 = {
     hueStep: 10,          // Degrees to change hue per key press
     energyStep: 10,       // Energy change per key press
     amountStep: 10,       // Amount change per key press
-    radiusStep: 2,        // Radius change per key press
-    turbulenceStep: 10    // Turbulence change per key press
+    radiusStep: 1,        // SMALLER steps for finer control
+    turbulenceStep: 5     // SMALLER steps for finer control
   },
   
   // ===== UI STYLING =====

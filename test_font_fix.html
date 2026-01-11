@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Particle Text Test - Filled Shapes</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #0a0a0a;
+      overflow: hidden;
+    }
+    #debug {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background: rgba(0,0,0,0.8);
+      padding: 15px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-family: monospace;
+      color: #fff;
+      max-width: 350px;
+      z-index: 1000;
+    }
+    .success { color: #4CAF50; }
+    .error { color: #f44336; }
+    .info { color: #2196F3; }
+  </style>
+</head>
+<body>
+  <div id="debug">Loading font...</div>
+  <script>
+    // Font configuration
+    const FONT_URL = 'https://cdn.jsdelivr.net/npm/open-fonts@1.1.1/fonts/src/liberation-sans/LiberationSans-Bold.ttf';
+    let samplerFont = null;
+    let particles = [];
+    let debugDiv;
+    let pg; // Graphics buffer
+    
+    function preload() {
+      // Load font in preload - this ensures it's ready before setup()
+      samplerFont = loadFont(FONT_URL);
+    }
+    
+    function setup() {
+      createCanvas(windowWidth, windowHeight);
+      debugDiv = document.getElementById('debug');
+      
+      log('🚀 Setup started', 'info');
+      log(`Canvas: ${width}x${height}`, 'info');
+      
+      // Check if font loaded
+      if (samplerFont) {
+        log('✅ Font loaded successfully!', 'success');
+        
+        // Test pixel-based text sampling
+        testPixelSampling();
+      } else {
+        log('❌ Font failed to load!', 'error');
+      }
+    }
+    
+    function testPixelSampling() {
+      let testText = "HAPPINESS";
+      let fontSize = 120;
+      let centerX = width / 2;
+      let centerY = height / 2;
+      
+      log(`📝 Testing pixel sampling with "${testText}"`, 'info');
+      
+      // Set up text properties for measurement
+      textFont(samplerFont);
+      textSize(fontSize);
+      let tw = textWidth(testText);
+      let th = fontSize * 1.5;
+      
+      // Add padding
+      let padding = 20;
+      let bufferWidth = ceil(tw + padding * 2);
+      let bufferHeight = ceil(th + padding * 2);
+      
+      log(`📐 Buffer size: ${bufferWidth}x${bufferHeight}`, 'info');
+      
+      // Create off-screen graphics buffer
+      pg = createGraphics(bufferWidth, bufferHeight);
+      pg.pixelDensity(1);
+      
+      // Draw text on buffer
+      pg.background(0);
+      pg.fill(255);
+      pg.noStroke();
+      pg.textFont(samplerFont);
+      pg.textSize(fontSize);
+      pg.textAlign(CENTER, CENTER);
+      pg.text(testText, bufferWidth / 2, bufferHeight / 2);
+      
+      // Load pixels
+      pg.loadPixels();
+      
+      // Collect white pixels
+      let textPixels = [];
+      for (let y = 0; y < bufferHeight; y++) {
+        for (let x = 0; x < bufferWidth; x++) {
+          let index = (x + y * bufferWidth) * 4;
+          let brightness = (pg.pixels[index] + pg.pixels[index + 1] + pg.pixels[index + 2]) / 3;
+          
+          if (brightness > 128) {
+            let canvasX = centerX - bufferWidth / 2 + x;
+            let canvasY = centerY - bufferHeight / 2 + y;
+            textPixels.push({ x: canvasX, y: canvasY });
+          }
+        }
+      }
+      
+      log(`✅ Found ${textPixels.length} text pixels!`, textPixels.length > 0 ? 'success' : 'error');
+      
+      // Clean up buffer
+      pg.remove();
+      
+      if (textPixels.length > 0) {
+        // Sample particles from text pixels
+        let numParticles = min(8000, textPixels.length);
+        
+        // Shuffle and sample
+        for (let i = textPixels.length - 1; i > 0; i--) {
+          let j = floor(random(i + 1));
+          [textPixels[i], textPixels[j]] = [textPixels[j], textPixels[i]];
+        }
+        
+        for (let i = 0; i < numParticles; i++) {
+          let pixel = textPixels[i % textPixels.length];
+          particles.push({
+            x: pixel.x + random(-5, 5),
+            y: pixel.y + random(-5, 5),
+            targetX: pixel.x,
+            targetY: pixel.y,
+            vx: 0,
+            vy: 0,
+            hue: random(50, 70), // Yellow-gold range
+            size: random(2, 4)
+          });
+        }
+        
+        log(`✨ Created ${particles.length} particles`, 'success');
+      }
+    }
+    
+    function draw() {
+      background(10);
+      
+      // Update and draw particles
+      colorMode(HSB, 360, 100, 100);
+      noStroke();
+      
+      for (let p of particles) {
+        // Perlin noise for subtle movement
+        let nx = noise(p.targetX * 0.01, frameCount * 0.005);
+        let ny = noise(p.targetY * 0.01 + 100, frameCount * 0.005);
+        
+        // Apply subtle turbulence
+        p.vx += (nx - 0.5) * 0.3;
+        p.vy += (ny - 0.5) * 0.3;
+        
+        // Spring force toward target
+        let dx = p.targetX - p.x;
+        let dy = p.targetY - p.y;
+        p.vx += dx * 0.15;
+        p.vy += dy * 0.15;
+        
+        // Damping
+        p.vx *= 0.85;
+        p.vy *= 0.85;
+        
+        // Update position
+        p.x += p.vx;
+        p.y += p.vy;
+        
+        // Draw particle
+        fill(p.hue, 80, 95);
+        ellipse(p.x, p.y, p.size);
+      }
+      
+      // Draw info
+      fill(255);
+      noStroke();
+      textSize(14);
+      textAlign(RIGHT, BOTTOM);
+      textFont('monospace');
+      text(`Particles: ${particles.length} | FPS: ${floor(frameRate())}`, width - 20, height - 20);
+    }
+    
+    function log(msg, type = 'info') {
+      console.log(msg);
+      if (debugDiv) {
+        debugDiv.innerHTML += `<div class="${type}">${msg}</div>`;
+      }
+    }
+    
+    function windowResized() {
+      resizeCanvas(windowWidth, windowHeight);
+    }
+  </script>
+</body>
+</html>

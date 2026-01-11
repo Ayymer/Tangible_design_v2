@@ -55,21 +55,23 @@ class Particle {
     let nx = noise(this.id * 0.1, frameCount * timeScale);
     let ny = noise(this.id * 0.1 + 100, frameCount * timeScale);
     
-    // Apply turbulence
-    let turbulenceForce = map(this.turbulence, 0, 100, 0, 2);
+    // Apply turbulence - REDUCED for better readability
+    // Map turbulence 0-100 to a smaller range for subtle movement
+    let turbulenceForce = map(this.turbulence, 0, 100, 0, 0.8);
     this.vx += (nx - 0.5) * turbulenceForce;
     this.vy += (ny - 0.5) * turbulenceForce;
     
     // Spring force toward target (keeps particles near text shape)
     let dx = this.targetX - this.x;
     let dy = this.targetY - this.y;
-    let springStrength = 0.15; // Increased from 0.05 for tighter letter shapes
+    // INCREASED spring strength for tighter letter shapes and better readability
+    let springStrength = map(this.turbulence, 0, 100, 0.25, 0.1);
     this.vx += dx * springStrength;
     this.vy += dy * springStrength;
     
-    // Damping (friction)
-    this.vx *= 0.9;
-    this.vy *= 0.9;
+    // Damping (friction) - INCREASED for more stable particles
+    this.vx *= 0.85;
+    this.vy *= 0.85;
     
     // Update position
     this.x += this.vx;

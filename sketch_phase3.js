@@ -23,6 +23,20 @@ let currentParams = {
   turbulence: 40
 };
 
+// Preload function - loads assets before setup()
+function preload() {
+  // Load the font for TextSampler
+  loadFont(FONT_URL, 
+    (font) => {
+      samplerFont = font;
+      console.log('✅ Font preloaded successfully');
+    },
+    (err) => {
+      console.error('❌ Font preload failed:', err);
+    }
+  );
+}
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
   
@@ -42,6 +56,7 @@ function setup() {
   paramDisplay = new ParameterDisplayPhase3(CONFIG_PHASE3);
   
   console.log('✅ Phase 3 initialized');
+  console.log('📝 Font loaded:', samplerFont ? 'YES' : 'NO');
 }
 
 function createModernButton() {
