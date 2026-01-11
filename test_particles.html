@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Particle Test</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
+  <script src="config_phase3.js"></script>
+  <script src="Particle.js"></script>
+  <script src="ParticleTypes.js"></script>
+  <script src="TextSampler.js"></script>
+  <script src="ParticleTextSystem.js"></script>
+</head>
+<body>
+  <script>
+    let textSystem;
+    
+    function setup() {
+      createCanvas(800, 600);
+      
+      // Create test params
+      let testParams = {
+        hue: 60,
+        energy: 50,
+        amount: 80,
+        radius: 8,
+        turbulence: 40
+      };
+      
+      // Create text system
+      textSystem = new ParticleTextSystem(
+        "HELLO",
+        "squares",
+        testParams,
+        width / 2,
+        height / 2,
+        150
+      );
+      
+      console.log("Test system created, particles:", textSystem.getParticleCount());
+    }
+    
+    function draw() {
+      background(128);
+      
+      if (textSystem) {
+        textSystem.update();
+        textSystem.display();
+      }
+      
+      // Show debug info
+      fill(255);
+      noStroke();
+      textSize(12);
+      textAlign(LEFT, TOP);
+      text(`Particles: ${textSystem ? textSystem.getParticleCount() : 0}`, 10, 10);
+      text(`Frame: ${frameCount}`, 10, 25);
+    }
+  </script>
+</body>
+</html>

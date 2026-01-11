@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Simple Particle Test</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
+</head>
+<body>
+  <div id="debug" style="position: fixed; top: 10px; left: 10px; background: white; padding: 10px; font-family: monospace; z-index: 1000;"></div>
+  <script>
+    let particles = [];
+    let debugDiv;
+    
+    function setup() {
+      createCanvas(windowWidth, windowHeight);
+      debugDiv = document.getElementById('debug');
+      
+      log('Setup complete');
+      log(`Canvas: ${width}x${height}`);
+      
+      // Create simple test particles
+      for (let i = 0; i < 100; i++) {
+        particles.push({
+          x: width / 2 + random(-100, 100),
+          y: height / 2 + random(-100, 100),
+          size: random(5, 15),
+          hue: random(360)
+        });
+      }
+      
+      log(`Created ${particles.length} particles`);
+    }
+    
+    function draw() {
+      background(128);
+      
+      // Draw particles
+      colorMode(HSB);
+      noStroke();
+      for (let p of particles) {
+        fill(p.hue, 80, 90);
+        ellipse(p.x, p.y, p.size);
+      }
+      
+      // Draw center cross
+      stroke(255, 0, 0);
+      strokeWeight(2);
+      line(width/2 - 20, height/2, width/2 + 20, height/2);
+      line(width/2, height/2 - 20, width/2, height/2 + 20);
+      
+      // Update debug
+      if (frameCount % 30 === 0) {
+        updateDebug();
+      }
+    }
+    
+    function log(msg) {
+      console.log(msg);
+      if (debugDiv) {
+        debugDiv.innerHTML += msg + '<br>';
+      }
+    }
+    
+    function updateDebug() {
+      let html = `Frame: ${frameCount}<br>`;
+      html += `Particles: ${particles.length}<br>`;
+      html += `Canvas: ${width}x${height}`;
+      debugDiv.innerHTML = html;
+    }
+  </script>
+</body>
+</html>

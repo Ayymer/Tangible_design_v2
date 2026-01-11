@@ -29,36 +29,36 @@ const CONFIG_PHASE3 = {
     happiness: {
       hue: 60,        // Yellow/Gold
       energy: 70,     // Lively
-      amount: 80,     // Dense
-      radius: 6,      // Medium
+      amount: 95,     // Very dense for legibility
+      radius: 4,      // Smaller for tighter packing
       turbulence: 40  // Moderate chaos
     },
     trust: {
       hue: 180,       // Turquoise/Cyan
       energy: 30,     // Calm
-      amount: 75,     // Dense
-      radius: 4,      // Small
+      amount: 95,     // Very dense for legibility
+      radius: 3,      // Smaller for tighter packing
       turbulence: 20  // Low chaos
     },
     envy: {
       hue: 15,        // Red-Orange
       energy: 60,     // Medium
-      amount: 60,     // Moderate
-      radius: 5,      // Small
+      amount: 95,     // Very dense for legibility
+      radius: 3,      // Smaller for tighter packing
       turbulence: 50  // Medium chaos
     },
     rage: {
       hue: 0,         // Pure Red
       energy: 100,    // Maximum
-      amount: 90,     // Very dense
-      radius: 10,     // Large
+      amount: 95,     // Very dense for legibility
+      radius: 6,      // Smaller for legibility
       turbulence: 90  // Extreme chaos
     },
     anger: {
       hue: 30,        // Orange
       energy: 90,     // Very fast
-      amount: 70,     // Moderate
-      radius: 8,      // Larger
+      amount: 95,     // Very dense for legibility
+      radius: 4,      // Smaller for tighter packing
       turbulence: 70  // High chaos
     }
   },

@@ -27,7 +27,7 @@ class ParticleTextSystem {
     this.particles = [];
     
     // Calculate number of particles based on amount parameter
-    let numParticles = floor(map(this.params.amount, 0, 100, 50, 500));
+    let numParticles = floor(map(this.params.amount, 0, 100, 200, 1200));
     
     // Sample points from text
     let points = this.sampler.sampleText(
