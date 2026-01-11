@@ -183,37 +183,76 @@ function handleEmotionDetected(emotion) {
 function keyPressed() {
   if (!currentEmotion) return;
   
-  let k = key.toLowerCase();
   let changed = false;
   let changedParam = null;
   
-  switch(k) {
-    case 'h':
-      currentParams.hue = (currentParams.hue + CONFIG_PHASE3.parameters.hueStep) % 360;
-      changed = true;
-      changedParam = 'H';
-      break;
-    case 'e':
-      currentParams.energy = (currentParams.energy + CONFIG_PHASE3.parameters.energyStep) % 101;
-      changed = true;
-      changedParam = 'E';
-      break;
-    case 'a':
-      currentParams.amount = (currentParams.amount + CONFIG_PHASE3.parameters.amountStep) % 101;
-      changed = true;
-      changedParam = 'A';
-      break;
-    case 'r':
-      currentParams.radius = ((currentParams.radius + CONFIG_PHASE3.parameters.radiusStep - 1) % 20) + 1;
-      changed = true;
-      changedParam = 'R';
-      console.log('● RADIUS:', currentParams.radius);
-      break;
-    case 't':
-      currentParams.turbulence = (currentParams.turbulence + CONFIG_PHASE3.parameters.turbulenceStep) % 101;
-      changed = true;
-      changedParam = 'T';
-      break;
+  // Support both keyboard letters (H/E/A/R/T) and Makey Makey touch controls
+  let k = key.toLowerCase();
+  
+  // Arrow keys for Makey Makey touch controls
+  if (keyCode === UP_ARROW) {
+    // UP arrow: Increase Hue
+    currentParams.hue = (currentParams.hue + CONFIG_PHASE3.parameters.hueStep) % 360;
+    changed = true;
+    changedParam = 'H';
+    console.log('↑ HUE:', currentParams.hue);
+  } else if (keyCode === DOWN_ARROW) {
+    // DOWN arrow: Decrease Hue
+    currentParams.hue = (currentParams.hue - CONFIG_PHASE3.parameters.hueStep + 360) % 360;
+    changed = true;
+    changedParam = 'H';
+    console.log('↓ HUE:', currentParams.hue);
+  } else if (keyCode === RIGHT_ARROW) {
+    // RIGHT arrow: Increase Energy
+    currentParams.energy = min(100, currentParams.energy + CONFIG_PHASE3.parameters.energyStep);
+    changed = true;
+    changedParam = 'E';
+    console.log('→ ENERGY:', currentParams.energy);
+  } else if (keyCode === LEFT_ARROW) {
+    // LEFT arrow: Decrease Energy
+    currentParams.energy = max(0, currentParams.energy - CONFIG_PHASE3.parameters.energyStep);
+    changed = true;
+    changedParam = 'E';
+    console.log('← ENERGY:', currentParams.energy);
+  } else if (k === ' ') {
+    // SPACE: Cycle Amount (25, 50, 75, 100)
+    let amounts = [25, 50, 75, 100];
+    let currentIndex = amounts.findIndex(a => a >= currentParams.amount);
+    currentIndex = (currentIndex + 1) % amounts.length;
+    currentParams.amount = amounts[currentIndex];
+    changed = true;
+    changedParam = 'A';
+    console.log('⎵ AMOUNT:', currentParams.amount);
+  } else {
+    // Original keyboard controls (H/E/A/R/T)
+    switch(k) {
+      case 'h':
+        currentParams.hue = (currentParams.hue + CONFIG_PHASE3.parameters.hueStep) % 360;
+        changed = true;
+        changedParam = 'H';
+        break;
+      case 'e':
+        currentParams.energy = (currentParams.energy + CONFIG_PHASE3.parameters.energyStep) % 101;
+        changed = true;
+        changedParam = 'E';
+        break;
+      case 'a':
+        currentParams.amount = (currentParams.amount + CONFIG_PHASE3.parameters.amountStep) % 101;
+        changed = true;
+        changedParam = 'A';
+        break;
+      case 'r':
+        currentParams.radius = ((currentParams.radius + CONFIG_PHASE3.parameters.radiusStep - 1) % 20) + 1;
+        changed = true;
+        changedParam = 'R';
+        console.log('● RADIUS:', currentParams.radius);
+        break;
+      case 't':
+        currentParams.turbulence = (currentParams.turbulence + CONFIG_PHASE3.parameters.turbulenceStep) % 101;
+        changed = true;
+        changedParam = 'T';
+        break;
+    }
   }
   
   if (changed && textSystem) {

@@ -127,7 +127,9 @@ const CONFIG_PHASE3 = {
       '',
       '1. Hold button to speak',
       '2. Say: happiness, anger, envy, rage, trust',
-      '3. Press H/E/A/R/T keys to adjust parameters'
+      '3. Adjust with keyboard or Makey Makey:',
+      '   ↑↓ arrows = Hue | ←→ arrows = Energy',
+      '   SPACE = Amount | H/E/A/R/T keys'
     ],
     buttonIdle: 'Hold to speak',
     buttonListening: 'Listening...'
