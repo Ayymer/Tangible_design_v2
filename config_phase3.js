@@ -11,7 +11,7 @@ const CONFIG_PHASE3 = {
   
   // ===== LAYOUT =====
   layout: {
-    textSize: 128,        // Readable size that won't overflow
+    textSize: 80,         // Readable size that fits on screen
     buttonOffsetY: 80     // Button offset from bottom
   },
   

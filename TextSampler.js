@@ -20,14 +20,14 @@ class TextSampler {
   sampleText(text, centerX, centerY, fontSize, numPoints) {
     console.log(`📝 Sampling "${text}" at canvas center (${centerX}, ${centerY}), size: ${fontSize}`);
     
-    // Estimate text dimensions
-    let charWidth = fontSize * 0.6;
+    // Estimate text dimensions (generous for bold text)
+    let charWidth = fontSize * 0.7;  // Increased from 0.6
     let textWidth = text.length * charWidth;
     let textHeight = fontSize;
     
-    // Create buffer large enough for the text
-    let bufferWidth = ceil(textWidth * 1.5);
-    let bufferHeight = ceil(textHeight * 1.5);
+    // Create buffer large enough for the text (with extra margin)
+    let bufferWidth = ceil(textWidth * 2);   // Increased from 1.5
+    let bufferHeight = ceil(textHeight * 2); // Increased from 1.5
     let pg = createGraphics(bufferWidth, bufferHeight);
     
     console.log(`📐 Buffer: ${bufferWidth}x${bufferHeight}, estimated text: ${floor(textWidth)}x${floor(textHeight)}`);
