@@ -86,7 +86,7 @@ class Particle {
     // Base implementation - simple circle
     push();
     colorMode(HSB);
-    fill(this.currentHue, 80, 90, 0.8);
+    fill(this.currentHue, 80, 95, 0.95);
     noStroke();
     ellipse(this.x, this.y, this.size);
     pop();

@@ -30,36 +30,36 @@ const CONFIG_PHASE3 = {
       hue: 60,        // Yellow/Gold
       energy: 70,     // Lively
       amount: 95,     // Very dense for legibility
-      radius: 12,     // Large for visibility
-      turbulence: 40  // Moderate chaos
+      radius: 18,     // Extra large for visibility
+      turbulence: 15  // Low chaos for readability
     },
     trust: {
       hue: 180,       // Turquoise/Cyan
       energy: 30,     // Calm
       amount: 95,     // Very dense for legibility
-      radius: 12,     // Large for visibility
-      turbulence: 20  // Low chaos
+      radius: 18,     // Extra large for visibility
+      turbulence: 10  // Very low chaos
     },
     envy: {
       hue: 15,        // Red-Orange
       energy: 60,     // Medium
       amount: 95,     // Very dense for legibility
-      radius: 12,     // Large for visibility
-      turbulence: 50  // Medium chaos
+      radius: 18,     // Extra large for visibility
+      turbulence: 20  // Low chaos for readability
     },
     rage: {
       hue: 0,         // Pure Red
       energy: 100,    // Maximum
       amount: 95,     // Very dense for legibility
-      radius: 15,     // Very large for visibility
-      turbulence: 90  // Extreme chaos
+      radius: 20,     // Extra large for visibility
+      turbulence: 30  // Moderate chaos (reduced for readability)
     },
     anger: {
       hue: 30,        // Orange
       energy: 90,     // Very fast
       amount: 95,     // Very dense for legibility
-      radius: 12,     // Large for visibility
-      turbulence: 70  // High chaos
+      radius: 18,     // Extra large for visibility
+      turbulence: 25  // Moderate chaos for readability
     }
   },
   
