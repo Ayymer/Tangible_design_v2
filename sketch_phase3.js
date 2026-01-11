@@ -4,14 +4,12 @@
    ============================================ */
 
 // Global variables
-let mic, speechRec, recordButton, bodyImg;
+let mic, speechRec, recordButton;
 let isListening = false;
 let currentEmotion = null;
-let imgLoaded = false;
 
-// Particle systems
+// Particle system
 let textSystem = null;
-let bodySystem = null;
 
 // UI
 let paramDisplay = null;
@@ -24,14 +22,6 @@ let currentParams = {
   radius: 6,
   turbulence: 40
 };
-
-function preload() {
-  // Load body silhouette
-  bodyImg = loadImage('silhouette.png', 
-    () => { imgLoaded = true; console.log('✅ Body image loaded'); },
-    () => { console.warn('⚠️ Body image not found'); }
-  );
-}
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -70,12 +60,6 @@ function draw() {
     paramDisplay.display();
   }
   
-  // Update and display body particles
-  if (bodySystem) {
-    bodySystem.update();
-    bodySystem.display();
-  }
-  
   // Update and display text particles
   if (textSystem) {
     textSystem.update();
@@ -97,7 +81,7 @@ function displayPrompt() {
   textAlign(CENTER, CENTER);
   text('Say: Happiness, Anger, Envy, Rage, Trust', 
        width / 2, 
-       height * CONFIG_PHASE3.layout.textY);
+       height / 2);
   pop();
 }
 
@@ -145,27 +129,14 @@ function handleEmotionDetected(emotionKey) {
     particleType,
     currentParams,
     width / 2,
-    height * CONFIG_PHASE3.layout.textY,
+    height / 2,  // Center vertically
     CONFIG_PHASE3.layout.textSize
   );
-  
-  // Create body particle system
-  if (imgLoaded && bodyImg) {
-    bodySystem = new ParticleBodySystem(
-      bodyImg,
-      particleType,
-      currentParams,
-      width / 2,
-      height * CONFIG_PHASE3.layout.bodyY,
-      CONFIG_PHASE3.layout.bodyHeight * 0.5,  // width
-      CONFIG_PHASE3.layout.bodyHeight          // height
-    );
-  }
   
   // Update parameter display
   paramDisplay.updateParams(currentParams);
   
-  console.log('✨ Particle systems created');
+  console.log('✨ Particle system created');
 }
 
 function keyPressed() {
@@ -213,12 +184,9 @@ function keyPressed() {
   }
   
   if (changed) {
-    // Update particle systems with new parameters
+    // Update particle system with new parameters
     if (textSystem) {
       textSystem.updateParams(currentParams);
-    }
-    if (bodySystem) {
-      bodySystem.updateParams(currentParams);
     }
     
     // Update parameter display
@@ -247,7 +215,7 @@ function styleButton(btn) {
   
   btn.position(
     width / 2 - btnConfig.width / 2,
-    height * btnConfig.offsetY
+    height - btnConfig.offsetY
   );
   btn.size(btnConfig.width, btnConfig.height);
   btn.style('color', btnConfig.textColor);
@@ -265,11 +233,11 @@ function windowResized() {
     let btnConfig = CONFIG_PHASE3.ui.button;
     recordButton.position(
       width / 2 - btnConfig.width / 2,
-      height * btnConfig.offsetY
+      height - btnConfig.offsetY
     );
   }
   
-  // Regenerate particle systems with new dimensions
+  // Regenerate particle system with new dimensions
   if (currentEmotion) {
     handleEmotionDetected(currentEmotion);
   }

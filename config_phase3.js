@@ -11,11 +11,8 @@ const CONFIG_PHASE3 = {
   
   // ===== LAYOUT =====
   layout: {
-    bodyY: 0.25,          // Body at 25% from top
-    bodyHeight: 180,      // Body silhouette height
-    textY: 0.55,          // Text at 55% from top (centered)
     textSize: 280,        // Large text size
-    buttonY: 0.92         // Button at 92% from top
+    buttonOffsetY: 60     // Button offset from bottom
   },
   
   // ===== EMOTION → PARTICLE TYPE MAPPING =====
@@ -110,9 +107,10 @@ const CONFIG_PHASE3 = {
       size: 14,
       lineHeight: 22,
       text: [
+        'INSTRUCTIONS',
         '1. Hold button to speak',
-        '2. Say an emotion word',
-        '3. Press H/E/A/R/T to adjust'
+        '2. Say: happiness, anger, envy, rage, trust',
+        '3. Press H/E/A/R/T keys to adjust parameters'
       ]
     },
     
