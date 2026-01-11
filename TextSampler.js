@@ -5,13 +5,11 @@
 
 class TextSampler {
   constructor() {
-    this.font = null;
+    // No state needed
   }
   
   /**
-   * Sample points from text using a grid-based approach
-   * This method doesn't rely on textToPoints (which requires font loading)
-   * Instead, it renders text to an off-screen buffer and samples pixels
+   * Sample points from text by rendering it and checking pixels
    * @param {string} text - Text to sample
    * @param {number} x - X position (center)
    * @param {number} y - Y position (center)
@@ -20,65 +18,67 @@ class TextSampler {
    * @returns {Array} Array of {x, y} points
    */
   sampleText(text, x, y, fontSize, numPoints) {
-    console.log(`📝 Sampling text: "${text}" at (${x}, ${y}), size: ${fontSize}, points: ${numPoints}`);
+    console.log(`📝 Sampling "${text}" at (${x}, ${y}), size: ${fontSize}, requesting: ${numPoints} points`);
     
-    // Create a temporary graphics buffer
-    let buffer = createGraphics(width, height);
+    // Estimate text bounds
+    let charWidth = fontSize * 0.6; // Average character width
+    let textWidth = text.length * charWidth;
+    let textHeight = fontSize * 1.2;
     
-    // Draw text to buffer with white on black
-    buffer.background(0);
-    buffer.fill(255);
-    buffer.noStroke();
-    buffer.textSize(fontSize);
-    buffer.textAlign(CENTER, CENTER);
-    buffer.textFont('Arial');
-    buffer.textStyle(BOLD);
+    // Create a buffer slightly larger than the text
+    let bufferWidth = ceil(textWidth + 100);
+    let bufferHeight = ceil(textHeight + 100);
+    let pg = createGraphics(bufferWidth, bufferHeight);
     
-    // Draw the text
-    buffer.text(text, x, y);
+    console.log(`📐 Buffer: ${bufferWidth}x${bufferHeight}`);
     
-    // Force the buffer to update
-    buffer.loadPixels();
+    // Draw text to buffer
+    pg.background(0, 0, 0); // Black background
+    pg.fill(255, 255, 255); // White text
+    pg.noStroke();
+    pg.textSize(fontSize);
+    pg.textFont('Arial');
+    pg.textStyle(BOLD);
+    pg.textAlign(CENTER, CENTER);
+    pg.text(text, bufferWidth / 2, bufferHeight / 2);
     
-    console.log(`📐 Buffer size: ${buffer.width}x${buffer.height}`);
-    console.log(`📍 Checking pixels...`);
+    // Load pixels
+    pg.loadPixels();
     
     // Collect all white pixels (where text is)
     let validPixels = [];
-    let step = 3; // Sample every 3 pixels
+    let step = 2; // Sample every 2 pixels for performance
     
-    let pixelsChecked = 0;
-    let whitePixels = 0;
-    
-    for (let py = 0; py < buffer.height; py += step) {
-      for (let px = 0; px < buffer.width; px += step) {
-        pixelsChecked++;
-        let index = (px + py * buffer.width) * 4;
+    for (let py = 0; py < pg.height; py += step) {
+      for (let px = 0; px < pg.width; px += step) {
+        let index = (px + py * pg.width) * 4;
+        let r = pg.pixels[index];
+        let g = pg.pixels[index + 1];
+        let b = pg.pixels[index + 2];
+        let a = pg.pixels[index + 3];
         
-        // Check if pixel is white (text)
-        let r = buffer.pixels[index];
-        let g = buffer.pixels[index + 1];
-        let b = buffer.pixels[index + 2];
-        let a = buffer.pixels[index + 3];
-        
-        // If pixel is bright and opaque
+        // If pixel is bright (part of text)
         if (r > 200 && g > 200 && b > 200 && a > 200) {
-          validPixels.push({x: px, y: py});
-          whitePixels++;
+          // Transform from buffer coordinates to canvas coordinates
+          let canvasX = x - textWidth / 2 + (px - bufferWidth / 2);
+          let canvasY = y - textHeight / 2 + (py - bufferHeight / 2);
+          validPixels.push({x: canvasX, y: canvasY});
         }
       }
     }
     
-    console.log(`🔍 Checked ${pixelsChecked} pixels, found ${whitePixels} white pixels`);
-    console.log(`✅ Valid pixels for sampling: ${validPixels.length}`);
+    console.log(`✅ Found ${validPixels.length} valid text pixels`);
     
-    // If we still don't have pixels, try a simpler geometric approach
+    // Clean up
+    pg.remove();
+    
+    // If no pixels found, return empty array (don't use fallback)
     if (validPixels.length === 0) {
-      console.warn('⚠️ Pixel sampling failed, using geometric fallback');
-      return this.sampleTextGeometric(text, x, y, fontSize, numPoints);
+      console.error('❌ No text pixels found! Check text rendering.');
+      return [];
     }
     
-    // Randomly select numPoints from valid pixels
+    // Randomly sample points
     let points = [];
     let actualPoints = min(numPoints, validPixels.length);
     
@@ -87,62 +87,15 @@ class TextSampler {
       points.push(validPixels[randomIndex]);
     }
     
-    console.log(`✨ Sampled ${points.length} points for particles`);
-    
-    // Clean up
-    buffer.remove();
+    console.log(`✨ Returning ${points.length} sampled points`);
     
     return points;
-  }
-  
-  /**
-   * Geometric fallback - creates points in a rectangular grid
-   * approximating the text bounds
-   */
-  sampleTextGeometric(text, x, y, fontSize, numPoints) {
-    console.log('📐 Using geometric approximation');
-    
-    // Estimate text bounds (rough approximation)
-    let charWidth = fontSize * 0.6; // Average character width
-    let textWidth = text.length * charWidth;
-    let textHeight = fontSize;
-    
-    let points = [];
-    let cols = ceil(sqrt(numPoints * (textWidth / textHeight)));
-    let rows = ceil(numPoints / cols);
-    
-    let startX = x - textWidth / 2;
-    let startY = y - textHeight / 2;
-    
-    for (let row = 0; row < rows; row++) {
-      for (let col = 0; col < cols; col++) {
-        if (points.length >= numPoints) break;
-        
-        let px = startX + (col / cols) * textWidth + random(-5, 5);
-        let py = startY + (row / rows) * textHeight + random(-5, 5);
-        
-        points.push({x: px, y: py});
-      }
-    }
-    
-    console.log(`✨ Generated ${points.length} geometric points`);
-    
-    return points;
-  }
-  
-  /**
-   * Sample points from text outline (perimeter only)
-   */
-  sampleTextOutline(text, x, y, fontSize, numPoints) {
-    // For now, just use regular sampling
-    // Could be enhanced to detect edges
-    return this.sampleText(text, x, y, fontSize, numPoints);
   }
   
   /**
    * Sample points from image
    */
-  sampleImage(img, x, y, w, h, numPoints, outlineOnly = false) {
+  sampleImage(img, x, y, w, h, numPoints) {
     if (!img) return [];
     
     img.loadPixels();
@@ -170,7 +123,9 @@ class TextSampler {
     
     // Randomly select points
     let points = [];
-    for (let i = 0; i < numPoints && validPixels.length > 0; i++) {
+    let actualPoints = min(numPoints, validPixels.length);
+    
+    for (let i = 0; i < actualPoints; i++) {
       let randomIndex = floor(random(validPixels.length));
       points.push(validPixels[randomIndex]);
     }
