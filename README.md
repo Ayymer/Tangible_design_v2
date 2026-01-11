@@ -1,5 +1,7 @@
 # Tangible Design v2: Particle Emotion Visualizer
 
+**🎮 [Try the Live Demo](https://ayymer.github.io/Tangible_design_v2/index_phase3.html)**
+
 This project is an interactive web application that visualizes spoken emotion words as dynamic, physics-based particle systems. Using the p5.js library, it captures voice input, recognizes specific emotion keywords, and transforms them into beautiful, tangible art that can be manipulated in real-time with a keyboard or a Makey Makey board.
 
 ![Particle Text Demo](https://i.imgur.com/your-demo-image.gif)  
